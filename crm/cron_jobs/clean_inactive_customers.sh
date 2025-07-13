@@ -1,7 +1,7 @@
 #!/bin/bash
 PROJECT_PATH="/media/allano/53CE082D539E52ED/_pD_BE/alx_backend_graphql_crm"
 cd $PROJECT_PATH || {
-    echo "$(date): Failed to cd to $PROJECT_PATH" >> customer_cleanup_log.txt
+    echo "$(date): Failed to cd to $PROJECT_PATH" >>/tmp/customercleanuplog.txt
     exit 1
 }
 
