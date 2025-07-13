@@ -1,0 +1,3 @@
+[console_scripts]
+ggl = ggl.ggl:main
+

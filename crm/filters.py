@@ -1,4 +1,3 @@
-import django_filters
 from django_filters import CharFilter, NumberFilter, FilterSet, DateTimeFilter
 from .models import Product, Order, Customer
 

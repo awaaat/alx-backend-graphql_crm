@@ -1,0 +1,2 @@
+2025-07-13 21:32:18.762685+00:00: Found 0 inactive customers
+2025-07-13 21:32:18.765287+00:00: Deleted 0 inactive customers

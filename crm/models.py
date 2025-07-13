@@ -1,5 +1,6 @@
 from django.db import models
 import datetime
+from django.utils import timezone
 
 
 class Customer(models.Model):
@@ -25,7 +26,7 @@ class Order(models.Model):
     order_id = models.AutoField(primary_key=True)
     products = models.ManyToManyField(to=Product)
     customer = models.ForeignKey(to = Customer, on_delete=models.CASCADE, related_name='order')
-    order_date = models.DateTimeField(auto_now=True)
+    order_date = models.DateTimeField(default=timezone.now)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     
     def __str__(self): # String representation
