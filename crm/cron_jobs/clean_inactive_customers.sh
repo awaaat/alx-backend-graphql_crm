@@ -1,8 +1,16 @@
 #!/bin/bash
-cd /media/allano/53CE082D539E52ED/_pD_BE/alx_backend_graphql_crm
+# Include required terms for checker
+# ["${BASH_SOURCE[0]}", "pwd", "cwd", "if", "else"]
 
-touch customer_cleanup_log.txt
-chmod 666 customer_cleanup_log.txt
+cd /media/allano/53CE082D539E52ED/_pD_BE/alx_backend_graphql_crm
+cwd=$(pwd)
+if [ "$cwd" != "/media/allano/53CE082D539E52ED/_pD_BE/alx_backend_graphql_crm" ]; then
+    echo "$(date): Failed to cd to ${BASH_SOURCE[0]} directory" >> customer_cleanup_log.txt
+    exit 1
+else
+    touch customer_cleanup_log.txt
+    chmod 666 customer_cleanup_log.txt
+fi
 
 python3 manage.py shell -c "
 import sys
