@@ -1,0 +1,1 @@
+0 2 * * 0 /media/allano/53CE082D539E52ED/_pD_BE/alx_backend_graphql_crm/crm/cron_jobs/send_order_reminders.py

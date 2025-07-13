@@ -22,7 +22,14 @@ class CustomerType(DjangoObjectType):
             'created_at',
         )
         
+# Define ProductType for GraphQL queries and mutations
 class ProductType(DjangoObjectType):
+    """
+    GraphQL type for Product model.
+
+    Exposes product_id, name, price, and quantity fields.
+    Used in UpdateLowStockProducts mutation to return updated products.
+    """
     class Meta:
         model = Product
         interfaces = (graphene.relay.Node,)
@@ -174,28 +181,47 @@ class CreateOrder(graphene.Mutation):
         return CreateOrder(order=order)
 
 class UpdateLowStockProducts(graphene.Mutation):
+    """
+    GraphQL mutation to update low-stock products.
+
+    Requirements:
+    - Query products with quantity < 10 (stock).
+    - Increment quantity by 10 for each product.
+    - Return a list of updated products, a success boolean, and a message.
+    - Used by cron job in crm/cron.py to restock products every 12 hours.
+    """
     class Arguments:
-        pass
+        pass  # No input arguments required
 
     products = graphene.List(ProductType)
     success = graphene.Boolean()
     message = graphene.String()
 
     def mutate(self, info):
+        """
+        Execute the mutation to update low-stock products.
+
+        Queries Product model for items with quantity < 10, increments quantity by 10,
+        and returns the updated products with a success message.
+        """
         try:
             with transaction.atomic():
+                # Query products with stock (quantity) < 10
                 low_stock_products = Product.objects.filter(quantity__lt=10)
                 updated_products = []
+                # Restock each product by adding 10 to quantity
                 for product in low_stock_products:
                     product.quantity += 10
                     product.save()
                     updated_products.append(product)
+                # Return updated products and success message
                 return UpdateLowStockProducts(
                     products=updated_products,
                     success=True,
                     message=f"Updated {len(updated_products)} low-stock products"
                 )
         except Exception as e:
+            # Handle errors and return failure response
             return UpdateLowStockProducts(
                 products=[],
                 success=False,
@@ -236,6 +262,11 @@ class Query(graphene.ObjectType):
         return qs 
 
 class Mutation(graphene.ObjectType):
+    """
+    Root mutation type for GraphQL schema.
+
+    Includes UpdateLowStockProducts mutation for cron job to restock low-stock products.
+    """
     create_customer = CreateCustomer.Field()
     bulk_create_customers = BulkCreateCustomers.Field()
     create_product = CreateProduct.Field()
@@ -243,3 +274,4 @@ class Mutation(graphene.ObjectType):
     update_low_stock_products = UpdateLowStockProducts.Field()
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
+
